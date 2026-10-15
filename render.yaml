@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: sgms-api-firdoshi
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_ORIGIN
+        value: https://sgms-web-firdoshi.onrender.com
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: JWT_COOKIE_MAX_AGE_MS
+        value: "604800000"
+
+  - type: web
+    runtime: static
+    name: sgms-web-firdoshi
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://sgms-api-firdoshi.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

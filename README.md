@@ -82,3 +82,14 @@ cd ../client && npm run lint && npm run build
 ```
 
 For a deployed client/API on different origins, set `VITE_API_URL` when building the client and set `CLIENT_ORIGIN` on the server. Use HTTPS in production so the secure authentication cookie is enabled.
+
+## Deploy to Render
+
+The repository includes a Render Blueprint in `render.yaml`. After pushing the repository to GitHub:
+
+1. In Render, choose **New + → Blueprint** and connect `firdoshi25-hash/SWMS`.
+2. Review the two services, `sgms-api-firdoshi` and `sgms-web-firdoshi`.
+3. When prompted, enter `MONGO_URI` as a secret using your MongoDB Atlas connection string. The Blueprint generates `JWT_SECRET` privately.
+4. Deploy the Blueprint and wait for the API health check to pass before testing the static site.
+
+The Blueprint configures the API CORS origin and frontend API URL for those service names, plus an SPA rewrite so direct page URLs work. The database URI is never stored in Git. Configure Atlas Network Access to allow connections from your Render service; avoid opening database access to every IP unless you understand and accept that security tradeoff.
