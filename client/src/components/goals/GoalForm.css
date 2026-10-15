@@ -1,0 +1,195 @@
+.goal-form-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(15, 23, 42, 0.55);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+
+  z-index: 2000;
+}
+
+.goal-form {
+  width: 100%;
+  max-width: 520px;
+
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background: white;
+
+  padding: 28px;
+
+  border-radius: 18px;
+
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+}
+
+.goal-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 24px;
+}
+
+.goal-form-header h2 {
+  margin: 0 0 6px;
+
+  color: #1e293b;
+}
+
+.goal-form-header p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+.close-btn {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  background: #f1f5f9;
+
+  color: #475569;
+
+  border-radius: 50%;
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background: #e2e8f0;
+}
+
+.goal-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-form label {
+  margin-bottom: 7px;
+
+  color: #334155;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.goal-form input,
+.goal-form select,
+.goal-form textarea {
+  width: 100%;
+
+  padding: 12px 13px;
+
+  margin-bottom: 18px;
+
+  border: 1px solid #cbd5e1;
+
+  border-radius: 9px;
+
+  background: white;
+
+  color: #1e293b;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  outline: none;
+}
+
+.goal-form input:focus,
+.goal-form select:focus,
+.goal-form textarea:focus {
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.goal-form textarea {
+  resize: vertical;
+}
+
+.goal-form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 5px;
+}
+
+.cancel-btn,
+.save-goal-btn {
+  padding: 11px 18px;
+
+  border-radius: 9px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.cancel-btn {
+  border: 1px solid #cbd5e1;
+
+  background: white;
+
+  color: #475569;
+}
+
+.cancel-btn:hover {
+  background: #f8fafc;
+}
+
+.save-goal-btn {
+  border: none;
+
+  background: #2563eb;
+
+  color: white;
+}
+
+.save-goal-btn:hover {
+  background: #1d4ed8;
+}
+
+
+/* Mobile */
+
+@media (max-width: 480px) {
+
+  .goal-form-overlay {
+    padding: 12px;
+  }
+
+  .goal-form {
+    padding: 20px;
+
+    border-radius: 14px;
+  }
+
+  .goal-form-actions {
+    flex-direction: column;
+  }
+
+  .cancel-btn,
+  .save-goal-btn {
+    width: 100%;
+  }
+
+}
