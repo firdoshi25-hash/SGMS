@@ -17,7 +17,17 @@ async function request(path, options = {}) {
 
 	if (response.status === 204) return null;
 
-	const payload = await response.json().catch(() => ({}));
+	const contentType = response.headers.get("content-type") || "";
+	if (!contentType.toLowerCase().includes("application/json")) {
+		throw new Error("The SGMS API is not connected to this site yet. Deploy the backend and set VITE_API_URL in the Render Static Site settings.");
+	}
+
+	let payload;
+	try {
+		payload = await response.json();
+	} catch {
+		throw new Error("The SGMS API returned an invalid response. Check the backend deployment logs.");
+	}
 	if (!response.ok) {
 		const error = new Error(payload.message || "The request could not be completed");
 		error.status = response.status;
