@@ -29,7 +29,7 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: https://sgms-api-firdoshi.onrender.com/api
+        value: https://sgms-f4r7.onrender.com/api
     routes:
       - type: rewrite
         source: /*
