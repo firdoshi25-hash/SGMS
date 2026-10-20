@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const test = require("node:test");
 
 const createResourceController = require("../controllers/resourceController");
+const { createStudentAccount } = require("../controllers/adminController");
+const User = require("../models/User");
 const resources = require("../models/resources");
 
 function responseStub() {
@@ -65,6 +67,37 @@ test("students cannot set leave status during create or update", async () => {
 
   assert.equal(saved.status, "pending");
   assert.deepEqual(updates, { reason: "Updated" });
+});
+
+test("admin can create student accounts with a student role", async () => {
+  const originalExists = User.exists;
+  const originalCreate = User.create;
+  const response = responseStub();
+
+  User.exists = async () => false;
+  User.create = async ({ name, email, password, role }) => ({
+    id: "student-123",
+    name,
+    email,
+    password,
+    role,
+    settings: { theme: "light", emailNotifications: true },
+  });
+
+  try {
+    await createStudentAccount({
+      user: { role: "admin" },
+      body: { name: "Aisha Khan", email: "aisha@example.com", password: "StrongPass123" },
+    }, response, assert.fail);
+  } finally {
+    User.exists = originalExists;
+    User.create = originalCreate;
+  }
+
+  assert.equal(response.code, 201);
+  assert.equal(response.body.user.role, "student");
+  assert.equal(response.body.user.email, "aisha@example.com");
+  assert.equal(typeof response.body.user.id, "string");
 });
 
 test("leave dates must be in chronological order", async () => {

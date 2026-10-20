@@ -1,25 +1,31 @@
-import { useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 
-const pageTitles = {
-  "/dashboard": "Dashboard", "/attendance": "Attendance", "/goals": "Goals",
-  "/notes": "Notes", "/projects": "Projects", "/study-tracker": "Study Tracker",
-  "/leave": "Leave requests", "/reports": "Reports", "/notifications": "Notifications", "/tasks": "Tasks", "/profile": "Profile",
-  "/student": "Student", "/settings": "Settings", "/admin": "Administration",
-};
-
 function Navbar({ onMenuClick }) {
-  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  async function handleSignOut() {
+    await logout().catch(() => {});
+    navigate("/login", { replace: true });
+  }
+
   return (
-    <header className="top-navbar">
-      <button className="menu-toggle" type="button" aria-label="Open navigation" onClick={onMenuClick}>☰</button>
-      <h1>{pageTitles[pathname] || "Student Growth"}</h1>
-      <div className="topbar-account">
-        <span>{user?.name}</span>
-        <button type="button" className="text-button" onClick={() => logout().catch(() => {})}>Sign out</button>
-    </div>
+    <header className="top-navbar dashboard-topbar">
+      <div className="brand-block">
+        <button className="menu-toggle" type="button" aria-label="Open navigation" onClick={onMenuClick}>☰</button>
+        <div className="brand-badge" aria-hidden="true">🎓</div>
+        <div className="brand-copy">
+          <strong>SGMS</strong>
+          <small>STUDENT GROWTH &amp; MANAGEMENT</small>
+        </div>
+      </div>
+      <div className="topbar-actions">
+        <Link to="/notifications" className="icon-btn" aria-label="Notifications" title="Notifications">🔔</Link>
+        <button type="button" className="signout-button" onClick={handleSignOut} title={`Sign out${user?.name ? ` ${user.name}` : ""}`}>
+          <span aria-hidden="true">↪</span><span>Sign out</span>
+        </button>
+      </div>
     </header>
   );
 }

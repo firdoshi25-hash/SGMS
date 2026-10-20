@@ -5,7 +5,7 @@ const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 const { dashboard } = require("./controllers/dashboardController");
-const { listLeaveRequests, reviewLeaveRequest } = require("./controllers/adminController");
+const { createStudentAccount, listLeaveRequests, reviewLeaveRequest } = require("./controllers/adminController");
 const { listUsers, updateProfile } = require("./controllers/userController");
 const { requireAuth, requireRole } = require("./middleware/auth");
 const errorHandler = require("./middleware/errorHandler");
@@ -45,6 +45,7 @@ function createApp() {
   } }));
   app.patch("/api/users/me", requireAuth, updateProfile);
   app.get("/api/admin/users", requireAuth, requireRole("admin"), listUsers);
+  app.post("/api/admin/users", requireAuth, requireRole("admin"), createStudentAccount);
   app.get("/api/admin/leave", requireAuth, requireRole("admin"), listLeaveRequests);
   app.patch("/api/admin/leave/:id", requireAuth, requireRole("admin"), reviewLeaveRequest);
 

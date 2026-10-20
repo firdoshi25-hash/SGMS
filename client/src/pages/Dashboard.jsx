@@ -12,6 +12,10 @@ function formatStudyTime(minutes = 0) {
   return hours ? `${hours}h ${remainingMinutes}m` : `${remainingMinutes}m`;
 }
 
+function completionPercent(completed = 0, total = 0) {
+  return total ? Math.min(100, Math.round((completed / total) * 100)) : 0;
+}
+
 function Dashboard() {
   const { user } = useAuth();
   const [dashboard, setDashboard] = useState(null);
@@ -33,17 +37,45 @@ function Dashboard() {
   }, []);
 
   const stats = dashboard?.stats;
+  const taskProgress = completionPercent(stats?.completedTasks, stats?.totalTasks);
+  const goalProgress = completionPercent(stats?.completedGoals, stats?.totalGoals);
+  const studyProgress = Math.min(100, Math.round(((stats?.studyMinutes || 0) / 600) * 100));
+  const overallProgress = Math.round((taskProgress + goalProgress + studyProgress) / 3);
 
   return (
     <div className="dashboard-content">
       <WelcomeCard name={user?.name} />
       {error && <div className="state-message error" role="alert">{error}</div>}
       {loading && <div className="state-message">Loading your dashboard...</div>}
-      <div className="stats">
-        <StatsCard title="Attendance" value={`${stats?.attendanceRate ?? 0}%`} />
-        <StatsCard title="Goals completed" value={`${stats?.completedGoals ?? 0} / ${stats?.totalGoals ?? 0}`} />
-        <StatsCard title="Study time" value={formatStudyTime(stats?.studyMinutes)} />
-        <StatsCard title="Active projects" value={String(stats?.activeProjects ?? 0)} />
+      <div className="stats stats-compact">
+        <StatsCard title="Study time" value={formatStudyTime(stats?.studyMinutes || 0)} icon="🕒" />
+        <StatsCard title="Goals completed" value={`${goalProgress}%`} icon="◎" emphasis />
+      </div>
+      <div className="dashboard-panels dashboard-panels-compact">
+        <section className="dashboard-panel quick-panel">
+          <div className="panel-heading"><h2>Quick access</h2><Link to="/dashboard">View all</Link></div>
+          <div className="quick-grid">
+            <Link to="/tasks" className="quick-card-item"><span className="quick-icon">✓</span><span>My Tasks</span></Link>
+            <Link to="/attendance" className="quick-card-item"><span className="quick-icon">◫</span><span>Attendance</span></Link>
+            <Link to="/study-tracker" className="quick-card-item"><span className="quick-icon">⏱</span><span>Study Tracker</span></Link>
+            <Link to="/projects" className="quick-card-item"><span className="quick-icon">▣</span><span>Projects</span></Link>
+          </div>
+        </section>
+        <section className="dashboard-panel progress-panel" aria-labelledby="student-progress-title">
+          <div className="panel-heading">
+            <h2 id="student-progress-title">Student progress</h2>
+            <strong>{overallProgress}%</strong>
+          </div>
+          <div className="progress-track" role="progressbar" aria-label="Overall student progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow={overallProgress}>
+            <span style={{ width: `${overallProgress}%` }} />
+          </div>
+          <div className="progress-breakdown">
+            <div><span>Tasks</span><strong>{taskProgress}%</strong><div className="progress-track small" role="progressbar" aria-label="Task completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow={taskProgress}><span style={{ width: `${taskProgress}%` }} /></div></div>
+            <div><span>Study target</span><strong>{studyProgress}%</strong><div className="progress-track small" role="progressbar" aria-label="Study target completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow={studyProgress}><span style={{ width: `${studyProgress}%` }} /></div></div>
+            <div><span>Goals</span><strong>{goalProgress}%</strong><div className="progress-track small" role="progressbar" aria-label="Goal completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow={goalProgress}><span style={{ width: `${goalProgress}%` }} /></div></div>
+          </div>
+          <p className="progress-note">Study target: 10 hours total</p>
+        </section>
       </div>
       <div className="dashboard-panels">
         <section className="dashboard-panel">
